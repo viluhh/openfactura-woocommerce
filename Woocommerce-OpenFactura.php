@@ -28,3 +28,16 @@ include('OpenFactura.php');
  * Create table openfactura_registry
  */
 register_activation_hook(__FILE__, 'openfactura_registry');
+
+add_action(
+    'before_woocommerce_init',
+    function () {
+        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+                'custom_order_tables',
+                __FILE__,
+                true
+            );
+        }
+    }
+);
