@@ -1127,24 +1127,10 @@ function sub_menu_option_openfactura()
 
 function get_private_order_notes($order_id)
 {
-    global $wpdb;
-    $order_note = null;
-    $table_perfixed = $wpdb->prefix . 'comments';
-    $results = $wpdb->get_results("
-        SELECT *
-        FROM $table_perfixed
-        WHERE  `comment_post_ID` = $order_id
-        AND  `comment_type` LIKE  'order_note'
-    ");
-    foreach ($results as $note) {
-        $order_note[] = array(
-            'note_id' => $note->comment_ID,
-            'note_date' => $note->comment_date,
-            'note_author' => $note->comment_author,
-            'note_content' => $note->comment_content,
-        );
-    }
-    return $order_note;
+    return wc_get_order_notes(array(
+        'order_id' => $order_id,
+        'type' => 'internal',
+    ));
 }
 
 /**
@@ -1155,9 +1141,9 @@ function so_payment_complete($order_id)
 {
     $order_notes = get_private_order_notes($order_id);
     //verificar que enlace de autoservicio no este creado previamente
-    if (isset($order_notes) && !empty($order_notes)) {
+    if (!empty($order_notes)) {
         foreach ($order_notes as $note) {
-            $note_content = $note['note_content'];
+            $note_content = $note->get_content();
             if (stristr($note_content, 'Obten tu documento tributario')) {
                 return;
             }
@@ -1939,9 +1925,9 @@ function my_completed_order_email_instructions($order, $sent_to_admin, $plain_te
     if ($openfactura_registry_active[0]->is_email_link_selfservice == '1') {
         $order_notes = get_private_order_notes($order->get_id());
         //verificar que enlace de autoservicio no este creado previamente
-        if (isset($order_notes) && !empty($order_notes)) {
+        if (!empty($order_notes)) {
             foreach ($order_notes as $note) {
-                $note_content = $note['note_content'];
+                $note_content = $note->get_content();
                 if (stristr($note_content, 'Obten tu documento tributario')) {
                     $link = str_replace("Obten tu documento tributario en:", "", $note_content);
                     echo '<p>Obtén tu documento tributario <a href=' . $link . '>aquí.</a></p>';
