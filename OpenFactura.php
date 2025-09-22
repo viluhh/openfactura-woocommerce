@@ -190,6 +190,9 @@ function save_data_openfactura_registry()
     $link_logo = '';
     $description = false;
     $emailLinkSelfservice = false;
+    $descriptionRequest = isset($_REQUEST['description']) ? $_REQUEST['description'] : '';
+    $emailLinkSelfserviceRequest = isset($_REQUEST['emailLinkSelfservice']) ? $_REQUEST['emailLinkSelfservice'] : '';
+    $urlLogoRequest = isset($_POST['urlLogo']) ? $_POST['urlLogo'] : '';
 
     #   ╔═══════════════════════════════╗
     #   ║ Check the config in the front ║
@@ -207,14 +210,14 @@ function save_data_openfactura_registry()
     if ($_REQUEST['enableLogo'] == "true") {
          $enableLogo = true;
     }
-    if ($_REQUEST['description'] == "true") {
+    if ($descriptionRequest === "true") {
          $description = true;
     }
-    if ($_REQUEST['emailLinkSelfservice'] == "true") {
+    if ($emailLinkSelfserviceRequest === "true") {
          $emailLinkSelfservice = true;
     }
-    if ($enableLogo && $_POST['urlLogo'] != '') {
-         $link_logo = str_replace(' ', '', $_POST['urlLogo']);
+    if ($enableLogo && $urlLogoRequest !== '') {
+         $link_logo = str_replace(' ', '', $urlLogoRequest);
     }
 
     #   ╔══════════════════════════════╗
@@ -584,6 +587,9 @@ function update_data_openfactura_registry()
         $link_logo = '';
         $description = false;
         $emailLinkSelfservice = false;
+        $descriptionRequest = isset($_REQUEST['description']) ? $_REQUEST['description'] : '';
+        $emailLinkSelfserviceRequest = isset($_REQUEST['emailLinkSelfservice']) ? $_REQUEST['emailLinkSelfservice'] : '';
+        $urlLogoRequest = isset($_POST['urlLogo']) ? $_POST['urlLogo'] : '';
 
         #   ╔═══════════════════════════════╗
         #   ║ Check the config in the front ║
@@ -601,14 +607,14 @@ function update_data_openfactura_registry()
         if ($_REQUEST['enableLogo'] == "true") {
              $enableLogo = true;
         }
-        if ($_REQUEST['description'] == "true") {
+        if ($descriptionRequest === "true") {
              $description = true;
         }
-        if ($_REQUEST['emailLinkSelfservice'] == "true") {
+        if ($emailLinkSelfserviceRequest === "true") {
              $emailLinkSelfservice = true;
         }
-        if ($enableLogo && $_POST['urlLogo'] != '') {
-            $link_logo = str_replace(' ', '', $_POST['urlLogo']);
+        if ($enableLogo && $urlLogoRequest !== '') {
+            $link_logo = str_replace(' ', '', $urlLogoRequest);
         }
 
         if ($newApiKey == $demoApiKey || $newApiKey == $demoApiKey2) {
