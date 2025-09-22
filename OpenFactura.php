@@ -1863,16 +1863,16 @@ function create_json_openfactura($order, $openfactura_registry)
         $note = __("Obten tu documento tributario en: " . $response['SELF_SERVICE']['url']);
         $order->add_order_note($note);
         if (!empty($document_type)) {
-            add_post_meta($order->get_id(), '_document_type', $document_type);
+            $order->update_meta_data('_document_type', $document_type);
             $order->add_order_note('Tipo de documento: ' . $document_type);
         }
         if (!empty($response['FOLIO'])) {
-            add_post_meta($order->get_id(), '_invoice_serial', $response['FOLIO']);
-            add_post_meta($order->get_id(), '_document_code', $document_code);
+            $order->update_meta_data('_invoice_serial', $response['FOLIO']);
+            $order->update_meta_data('_document_code', $document_code);
             $order->add_order_note('Folio: ' . $response['FOLIO']);
         } else {
-            add_post_meta($order->get_id(), '_invoice_serial', 'No Generado');
-            add_post_meta($order->get_id(), '_document_code', 'No Generado');
+            $order->update_meta_data('_invoice_serial', 'No Generado');
+            $order->update_meta_data('_document_code', 'No Generado');
             $order->add_order_note('Folio: Determinado cuando cliente genere documento.');
         }
     } else {
@@ -1890,25 +1890,26 @@ function create_json_openfactura($order, $openfactura_registry)
         $order->add_order_note($note);
 
         if (!empty($document_type)) {
-            add_post_meta($order->get_id(), '_document_type', $document_type);
+            $order->update_meta_data('_document_type', $document_type);
             $order->add_order_note('Tipo de documento: ' . $document_type);
         }
 
         if (empty($response['FOLIO'])) {
-            add_post_meta($order->get_id(), '_invoice_serial', 'No Generado');
-            add_post_meta($order->get_id(), '_document_code', 'No Generado');
+            $order->update_meta_data('_invoice_serial', 'No Generado');
+            $order->update_meta_data('_document_code', 'No Generado');
             $order->add_order_note('Folio: No generado');
         }
     }
+    $order->save();
     return $order;
 }
 
 add_action('woocommerce_admin_order_data_after_billing_address', 'misha_editable_order_meta_general');
 function misha_editable_order_meta_general($order)
 {
-    $document_type = get_post_meta($order->get_id(), '_document_type', true);
-    $serial_number = get_post_meta($order->get_id(), '_invoice_serial', true);
-    $document_code = get_post_meta($order->get_id(), '_document_code', true);
+    $document_type = $order->get_meta('_document_type');
+    $serial_number = $order->get_meta('_invoice_serial');
+    $document_code = $order->get_meta('_document_code');
     if (!empty($document_type)) {
         ?> <p>Tipo de documento: <?php echo $document_type; ?> </p>
         <?php
